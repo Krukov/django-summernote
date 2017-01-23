@@ -22,11 +22,13 @@
         var settings = window.parent.settings_{{ id }};
 
         // include summernote language pack, synchronously
-        if( settings.lang != 'en-US' ) {
-            $.ajaxSetup({async:false});
-            $.getScript('{% static "django_summernote/lang/summernote-" %}' + settings.lang + '.min.js');
-            $.ajaxSetup({async:true});
-        }
+        {% with 'django_summernote/lang/summernote-'|add:settings.lang|add:'.min.js' as lang_static_js %}
+            if( settings.lang != 'en-US' ) {
+                $.ajaxSetup({async:false});
+                $.getScript('{% static lang_static_js %}');
+                $.ajaxSetup({async:true});
+            }
+        {% endwith %}
 
         $('#summernote').html(src.value);
 
